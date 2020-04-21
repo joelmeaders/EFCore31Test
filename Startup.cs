@@ -1,6 +1,4 @@
 using System.Linq;
-using AspNetCore31Test2.Models;
-using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,12 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OData.Edm;
 
 namespace AspNetCore31Test2
 {
 	public class Startup
 	{
+		readonly string CORSBasePolicy = "_basePolicy";
+
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
@@ -26,8 +25,21 @@ namespace AspNetCore31Test2
 			services.AddDbContext<Context>(
 				db => db.UseSqlServer(Configuration["ConnectionStrings:Database"]), ServiceLifetime.Scoped);
 
-			services.AddControllers();
+			services.AddControllers().AddNewtonsoftJson();
 			services.AddOData();
+
+			services.AddCors(options =>
+			{
+				options.AddPolicy(name: CORSBasePolicy,
+				builder =>
+				{
+					// Not secure. Testing purposes only.
+					builder
+						.AllowAnyOrigin()
+						.AllowAnyMethod()
+						.AllowAnyHeader();
+				});
+			});
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -41,25 +53,16 @@ namespace AspNetCore31Test2
 
 			app.UseRouting();
 
+			app.UseCors();
+
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
-				endpoints.Select().Filter().OrderBy().Count().MaxTop(10);
-				endpoints.MapODataRoute("odata", "odata", GetEdmModel());
+				endpoints.EnableDependencyInjection();
+				endpoints.Expand().Select().Filter().OrderBy().Count().MaxTop(10);
 			});
-		}
-
-		private IEdmModel GetEdmModel()
-		{
-			var odataBuilder = new ODataConventionModelBuilder();
-
-			odataBuilder.EntitySet<Entity1>("Entity1");
-			odataBuilder.EntitySet<Entity2>("Entity2");
-			odataBuilder.EntitySet<Entity3>("Entity3");
-
-			return odataBuilder.GetEdmModel();
 		}
 	}
 }

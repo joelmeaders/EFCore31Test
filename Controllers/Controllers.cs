@@ -1,24 +1,29 @@
 ﻿using AspNetCore31Test2.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AspNetCore31Test2.Controllers
 {
-#pragma warning disable S101 // Types should be named in PascalCase
-	public partial class Entity1sController : BaseController<Entity1>
+	public class EntityOnesController : BaseController<Entity1>
 	{
-		public Entity1sController(Context context) : base(context) { }
+		public EntityOnesController(Context context) : base(context) { }
 	}
 
-	public partial class Entity2sController : BaseController<Entity2>
+	public class Entity2sController : BaseController<Entity2>
 	{
 		public Entity2sController(Context context) : base(context) { }
 	}
 
-	public partial class Entity3sController : BaseController<Entity3>
+	public class Entity3sController : BaseController<Entity3>
 	{
 		public Entity3sController(Context context) : base(context) { }
+	}
+
+	public class ViewEntity1Entity2sController : BaseViewController<ViewEntity1Entity2>
+	{
+		public ViewEntity1Entity2sController(Context context) : base(context) { }
+	}
+
+	public class ViewEntity2Entity3sController : BaseViewController<ViewEntity2Entity3>
+	{
+		public ViewEntity2Entity3sController(Context context) : base(context) { }
 	}
 }

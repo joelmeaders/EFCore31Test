@@ -12,6 +12,6 @@ namespace AspNetCore31Test2.Models
 
 
 		public virtual Entity1 Entity1 { get; set; }
-		public virtual Entity3 Entity3 { get; set; }
+		public virtual ICollection<Entity3> Entity3 { get; set; }
 	}
 }

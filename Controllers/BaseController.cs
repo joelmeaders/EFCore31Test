@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace AspNetCore31Test2.Controllers
 {
+	[ApiController]
+	[Route("api/[controller]")]
 	public abstract class BaseController<T> : ControllerBase where T : BaseModel
 	{
 		protected readonly Context Context;
@@ -28,7 +30,7 @@ namespace AspNetCore31Test2.Controllers
 			return Ok(DbSet.AsQueryable());
 		}
 
-		[HttpGet]
+		[HttpGet("{id}")]
 		[EnableQuery]
 		public virtual async Task<ActionResult<IQueryable<T>>> Get([FromODataUri] Guid key)
 		{
